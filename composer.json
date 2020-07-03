@@ -1,0 +1,15 @@
+{
+    "name": "ushahidi/platform-sdk-php",
+    "description": "An SDK for the v5+ Ushahidi Platform",
+    "type": "library",
+    "require": {
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "license": "AGPLv3",
+    "authors": [
+        {
+            "name": "Technology team",
+            "email": "technologyteam@ushahidi.com"
+        }
+    ]
+}
