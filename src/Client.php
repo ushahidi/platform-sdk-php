@@ -10,13 +10,13 @@ class Ushahidi
     private $availableSurveys;
     private $apiUrl;
     private $apiVersion = "5";
-
+    private $client;
     public function __construct(string $apiUrl, $version = "5")
     {
         $this->apiUrl = $apiUrl;
         $this->apiVersion = $version;
 
-        $client = new GuzzleHttp\Client([
+        $this->client = new Client([
             // Base URI is used with relative requests
             'base_uri' => "$this->apiUrl/api/v$this->apiVersion",
             // You can set any number of default request options.
