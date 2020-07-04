@@ -11,5 +11,11 @@
             "name": "Technology team",
             "email": "technologyteam@ushahidi.com"
         }
-    ]
+    ],
+
+    "autoload": {
+        "psr-4": {
+            "PlatformSDK\\": "src/"
+        }
+    }
 }
