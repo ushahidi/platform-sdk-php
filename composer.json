@@ -3,7 +3,7 @@
     "description": "An SDK for the v5+ Ushahidi Platform",
     "type": "library",
     "require": {
-        "guzzlehttp/guzzle": "^7.0"
+        "guzzlehttp/guzzle": "^6.0"
     },
     "license": "AGPLv3",
     "authors": [
@@ -12,7 +12,6 @@
             "email": "technologyteam@ushahidi.com"
         }
     ],
-
     "autoload": {
         "psr-4": {
             "PlatformSDK\\": "src/"
