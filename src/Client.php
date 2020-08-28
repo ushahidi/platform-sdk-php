@@ -11,16 +11,18 @@ class Client
     private $apiVersion;
     private $client;
 
-    public function __construct(string $apiUrl, string $version = '5')
+    public function __construct(string $apiUrl, array $options = [], string $version = '5')
     {
         $this->apiUrl = $apiUrl;
         $this->apiVersion = $version;
-        $this->client = new HttpClient([
+        $defaultOptions = [
             // Base URI is used with relative requests
             'base_uri' => "$this->apiUrl/api/v$this->apiVersion/",
             // You can set any number of default request options.
             'timeout' => 2.0,
-        ]);
+        ];
+        $clientOptions = array_merge($defaultOptions, $options);
+        $this->client = new HttpClient($clientOptions);
     }
 
     /**
