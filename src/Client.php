@@ -83,11 +83,12 @@ class Client
         ));
     }
 
-    public function queryLocation(string $query, $query_id = null, $group_by = null)
+    public function queryLocation(string $query, string $locale = null, $query_id = null, $group_by = null): array
     {
         $url = 'geolocation/query';
         $qs = http_build_query([
             'query' => $query,
+            'locale' => $locale,
             'qid' => $query_id,
             'group_by' => $group_by,
         ]);
