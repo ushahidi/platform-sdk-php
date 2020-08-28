@@ -83,6 +83,25 @@ class Client
         ));
     }
 
+    public function queryLocation(string $query, $query_id = null, $group_by = null)
+    {
+        $url = 'geolocation/query';
+        $qs = http_build_query([
+            'query' => $query,
+            'qid' => $query_id,
+            'group_by' => $group_by,
+        ]);
+
+        return $this->handleResponse($this->client->request(
+            'GET',
+            "$url?$qs",
+            [
+                'Content-Type' => 'application/json',
+                'Accept'       => 'application/json',
+            ]
+        ));
+    }
+
     /**
      * @param ResponseInterface $response
      * @return array
