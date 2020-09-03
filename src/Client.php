@@ -1,109 +1,122 @@
 <?php
 
+namespace Ushahidi\Platform;
 
-namespace PlatformSDK;
-use GuzzleHttp\Client;
-use http\QueryString;
+use GuzzleHttp\Client as HttpClient;
 use Psr\Http\Message\ResponseInterface;
-class Ushahidi
+
+class Client
 {
-    private $survey;
-    private $availableSurveys;
     private $apiUrl;
-    private $apiVersion = "5";
+    private $apiVersion;
     private $client;
-    private $resourcesUrl;
-    public function __construct(string $apiUrl, $version = "5")
+
+    public function __construct(string $apiUrl, array $options = [], string $version = '5')
     {
         $this->apiUrl = $apiUrl;
         $this->apiVersion = $version;
-        $this->client = new Client([
+        $defaultOptions = [
             // Base URI is used with relative requests
             'base_uri' => "$this->apiUrl/api/v$this->apiVersion/",
             // You can set any number of default request options.
-            'timeout'  => 2.0,
-        ]);
+            'timeout' => 2.0,
+        ];
+        $clientOptions = array_merge($defaultOptions, $options);
+        $this->client = new HttpClient($clientOptions);
     }
 
     /**
-     * Lists all available surveys from the Ushahidi Platform API
+     * Lists all available surveys from the Ushahidi Platform API.
      */
-    public function getAvailableSurveys()
+    public function getAvailableSurveys(): array
     {
-        $url = "surveys?format=minimal";
+        $url = 'surveys?format=minimal';
+
         return $this->handleResponse($this->client->request(
             'GET',
             $url,
             [
                 'Content-Type' => 'application/json',
-                'Accept'       => 'application/json'
+                'Accept' => 'application/json',
             ]
         ));
     }
 
     /**
-     * Get one survey from the Ushahidi Platform API
+     * Get one survey from the Ushahidi Platform API.
+     * @param int $id
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getSurvey(int $id)
+    public function getSurvey(int $id): array
     {
-        $url = "surveys";
+        $url = 'surveys';
+
         return $this->handleResponse($this->client->request(
             'GET',
             "$url/$id",
             [
                 'Content-Type' => 'application/json',
-                'Accept'       => 'application/json'
+                'Accept' => 'application/json',
             ]
         ));
     }
 
     /**
-     * Submit a post to a survey in the Ushahidi Platform API
+     * Submit a post to a survey in the Ushahidi Platform API.
+     * @param array $data
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function createPost(array $data)
+    public function createPost(array $data): array
     {
-        $url = "posts";
+        $url = 'posts';
+
         return $this->handleResponse($this->client->request(
             'POST',
             "$url",
             [
                 'Content-Type' => 'application/json',
-                'Accept'       => 'application/json',
-                'json' => $data
+                'Accept' => 'application/json',
+                'json' => $data,
             ]
         ));
     }
 
-    public function queryLocation(string $query, $query_id = null, $group_by = null) {
+    public function queryLocation(string $query, string $locale = null, $query_id = null, $group_by = null): array
+    {
         $url = 'geolocation/query';
         $qs = http_build_query([
             'query' => $query,
+            'locale' => $locale,
             'qid' => $query_id,
-            'group_by' => $group_by
+            'group_by' => $group_by,
         ]);
+
         return $this->handleResponse($this->client->request(
             'GET',
             "$url?$qs",
             [
                 'Content-Type' => 'application/json',
-                'Accept'       => 'application/json'
+                'Accept'       => 'application/json',
             ]
         ));
     }
+
     /**
      * @param ResponseInterface $response
      * @return array
      */
-    private function handleResponse(ResponseInterface $response) {
+    private function handleResponse(ResponseInterface $response): array
+    {
         $response_code = $response->getStatusCode();
         $response_reason = $response->getReasonPhrase();
         $body = $response->getBody()->getContents();
+
         return [
             'body' => json_decode($body, true),
             'status' => $response_code,
-            'reason' => $response_reason
+            'reason' => $response_reason,
         ];
     }
 }
