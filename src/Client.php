@@ -86,7 +86,7 @@ class Client
     /**
      * Submit a post to a survey using the special interim USSD endpoint
      */
-    public function createUSSDPost(array $data, string $from, DateTime $received = null): array
+    public function createUSSDPost(array $data, string $from, \DateTime $received = null): array
     {
         $url = 'posts/_ussd';
 
