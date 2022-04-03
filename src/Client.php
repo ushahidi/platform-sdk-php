@@ -83,6 +83,35 @@ class Client
         ));
     }
 
+    /**
+     * Submit a post to a survey using the special interim USSD endpoint
+     */
+    public function createUSSDPost(array $data, string $from, \DateTime $received = null): array
+    {
+        $url = 'posts/_ussd';
+
+        if (!array_key_exists("source_info", $data)) {
+            $data = array_merge($data, [
+                "source_info" => [
+                    "received" => ($received ?? new \DateTime)->format(\DateTime::ISO8601),
+                    "data_source" => "ussd",
+                    "type" => "phone",
+                    "contact" => $from
+                ]
+            ]);
+        }
+
+        return $this->handleResponse($this->client->request(
+            'POST',
+            "$url",
+            [
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'json' => $data,
+            ]
+        ));
+    }
+
     public function queryLocation(string $query, string $locale = null, $query_id = null, $group_by = null): array
     {
         $url = 'geolocation/query';
