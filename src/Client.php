@@ -84,6 +84,7 @@ class Client
     }
 
     /**
+     * #INTERIM / #UGLYHACK
      * Submit a post to a survey using the special interim USSD endpoint
      */
     public function createUSSDPost(array $data, string $from, \DateTime $received = null): array
@@ -95,6 +96,36 @@ class Client
                 "source_info" => [
                     "received" => ($received ?? new \DateTime)->format(\DateTime::ISO8601),
                     "data_source" => "ussd",
+                    "type" => "phone",
+                    "contact" => $from
+                ]
+            ]);
+        }
+
+        return $this->handleResponse($this->client->request(
+            'POST',
+            "$url",
+            [
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'json' => $data,
+            ]
+        ));
+    }
+
+    /**
+     * #INTERIM / #UGLYHACK
+     * Submit a post to a survey using the special interim WhatsApp endpoint
+     */
+    public function createWhatsAppPost(array $data, string $from, \DateTime $received = null): array
+    {
+        $url = 'posts/_whatsapp';
+
+        if (!array_key_exists("source_info", $data)) {
+            $data = array_merge($data, [
+                "source_info" => [
+                    "received" => ($received ?? new \DateTime)->format(\DateTime::ISO8601),
+                    "data_source" => "whatsapp",
                     "type" => "phone",
                     "contact" => $from
                 ]
